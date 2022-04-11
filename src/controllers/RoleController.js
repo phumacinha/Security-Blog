@@ -7,9 +7,20 @@ module.exports = {
   },
 
   async store(req, res) {
-    const { name } = req.body;
+    const { name, identifier } = req.body;
 
-    const role = await Role.create({ name });
+    const role = await Role.create({ name, identifier });
+
+    return res.json(role);
+  },
+
+  async update(req, res) {
+    const { id, name, identifier } = req.body;
+
+    const role = await Role.update({ name, identifier }, {
+      returning: true,
+      where: { id },
+    });
 
     return res.json(role);
   },
