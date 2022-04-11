@@ -9,7 +9,8 @@ import UserController from './controllers/UserController';
 
 const routes = express.Router();
 
-routes.post('/role', RoleController.store);
+routes.post('/roles', RoleController.store);
+routes.put('/roles', RoleController.update);
 
 routes.post('/users', UserController.store);
 
