@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import User from '../models/User';
-import Group from '../models/Group';
+import Role from '../models/Role';
 import EncryptorService from '../services/EncryptorService';
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
       email,
       login,
       password,
-      userGroups,
+      rolesId,
     } = req.body;
 
     const user = await User.create({
@@ -22,11 +22,11 @@ module.exports = {
       email,
       login,
       password: EncryptorService.hashPassword(password),
-    }).then();
+    });
 
-    const groups = await Promise.all((userGroups || [])
-      .map((groupId) => Group.findByPk(groupId).then((group) => group)));
+    // const roles = await Promise.all((rolesId || [])
+    //   .map((roleId) => Role.findByPk(roleId).then((role) => role)));
 
-    return res.json({ ...user.dataValues, groups });
+    return res.json(user);
   },
 };

@@ -1,13 +1,13 @@
 import { Model, DataTypes } from 'sequelize';
 
-class Group extends Model {
+class Role extends Model {
   static init(sequelize) {
     super.init({ name: DataTypes.STRING }, { sequelize });
   }
 
   static associate(models) {
-    this.belongsToMany(models.Group, { through: 'user_groups', foreignKey: 'group_id', as: 'groups' });
+    this.belongsToMany(models.Role, { through: 'users_roles', foreignKey: 'role_id', as: 'roles' });
   }
 }
 
-module.exports = Group;
+module.exports = Role;

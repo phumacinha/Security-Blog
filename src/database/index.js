@@ -1,21 +1,21 @@
 import Sequelize from 'sequelize';
 import dbConfig from '../config/database';
 
-import Group from '../models/Group';
+import Role from '../models/Role';
 import User from '../models/User';
-import UserGroup from '../models/UserGroup';
+import UserRole from '../models/UserRole';
 import Post from '../models/Post';
 import Comment from '../models/Comment';
 
 const connection = new Sequelize(dbConfig[process.env.NODE_ENV]);
 
-Group.init(connection);
+Role.init(connection);
 User.init(connection);
-UserGroup.init(connection);
+UserRole.init(connection);
 Post.init(connection);
 Comment.init(connection);
 
-Group.associate(connection.models);
+Role.associate(connection.models);
 User.associate(connection.models);
 Post.associate(connection.models);
 Comment.associate(connection.models);

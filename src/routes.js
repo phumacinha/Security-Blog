@@ -1,6 +1,6 @@
 import express from 'express';
 
-import GroupController from './controllers/GroupController';
+import RoleController from './controllers/RoleController';
 import UserController from './controllers/UserController';
 // import AdventureTypeController from './controllers/AdventureTypeController';
 // import AdventureController from './controllers/AdventureController';
@@ -9,7 +9,7 @@ import UserController from './controllers/UserController';
 
 const routes = express.Router();
 
-routes.post('/group', GroupController.store);
+routes.post('/role', RoleController.store);
 
 routes.post('/users', UserController.store);
 

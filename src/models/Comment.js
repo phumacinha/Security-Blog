@@ -2,7 +2,10 @@ import { Model, DataTypes } from 'sequelize';
 
 class Comment extends Model {
   static init(sequelize) {
-    super.init({ content: DataTypes.TEXT }, { sequelize });
+    super.init({
+      content: DataTypes.TEXT,
+      createdAt: DataTypes.DATE,
+    }, { sequelize });
   }
 
   static associate(models) {

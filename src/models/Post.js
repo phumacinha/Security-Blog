@@ -6,6 +6,7 @@ class Post extends Model {
       {
         title: DataTypes.STRING,
         content: DataTypes.TEXT,
+        createdAt: DataTypes.DATE,
       },
       {
         sequelize,

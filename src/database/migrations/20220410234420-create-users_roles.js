@@ -1,5 +1,5 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('user_group', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('users_roles', {
     user_id: {
       primaryKey: true,
       type: Sequelize.INTEGER,
@@ -8,11 +8,11 @@ module.exports = {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
-    group_id: {
+    role_id: {
       primaryKey: true,
       type: Sequelize.INTEGER,
       allowNull: false,
-      references: { model: 'groups', key: 'id' },
+      references: { model: 'roles', key: 'id' },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
@@ -26,5 +26,5 @@ module.exports = {
     },
   }),
 
-  down: (queryInterface) => queryInterface.dropTable('user_group'),
+  down: (queryInterface) => queryInterface.dropTable('users_roles'),
 };

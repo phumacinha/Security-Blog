@@ -8,11 +8,11 @@ class User extends Model {
         email: DataTypes.STRING,
         login: DataTypes.STRING,
         password: DataTypes.STRING,
-        user_groups: DataTypes.ARRAY(DataTypes.INTEGER),
+        roles: DataTypes.ARRAY(DataTypes.INTEGER),
       },
       {
         defaultScope: {
-          attributes: { exclude: ['password'] },
+          attributes: { exclude: ['password', 'roles'] },
         },
         sequelize,
       },
@@ -20,7 +20,7 @@ class User extends Model {
   }
 
   static associate(models) {
-    this.belongsToMany(models.Group, { through: 'user_groups', foreignKey: 'user_id', as: 'groups' });
+    this.belongsToMany(models.Role, { through: 'users_roles', foreignKey: 'user_id', as: 'roles' });
   }
 }
 
