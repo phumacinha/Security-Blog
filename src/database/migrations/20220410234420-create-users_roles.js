@@ -1,17 +1,23 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('users_roles', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('user_roles', {
+    // id: {
+    //   type: Sequelize.INTEGER,
+    //   autoIncrement: true,
+    //   allowNull: false,
+    //   primaryKey: true,
+    // },
     user_id: {
-      primaryKey: true,
       type: Sequelize.INTEGER,
       allowNull: false,
+      primaryKey: true,
       references: { model: 'users', key: 'id' },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
     role_id: {
-      primaryKey: true,
       type: Sequelize.INTEGER,
       allowNull: false,
+      primaryKey: true,
       references: { model: 'roles', key: 'id' },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
@@ -26,5 +32,5 @@ module.exports = {
     },
   }),
 
-  down: (queryInterface) => queryInterface.dropTable('users_roles'),
+  down: (queryInterface) => queryInterface.dropTable('user_roles'),
 };

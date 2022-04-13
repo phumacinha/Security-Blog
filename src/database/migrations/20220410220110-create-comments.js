@@ -1,8 +1,13 @@
 module.exports = {
   up: (queryInterface, Sequelize) => queryInterface.createTable('comments', {
+    id: {
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
+    },
     user_id: {
       type: Sequelize.INTEGER,
-      primaryKey: true,
       allowNull: false,
       references: { model: 'users', key: 'id' },
       onUpdate: 'CASCADE',
@@ -10,7 +15,6 @@ module.exports = {
     },
     post_id: {
       type: Sequelize.INTEGER,
-      primaryKey: true,
       allowNull: false,
       references: { model: 'posts', key: 'id' },
       onUpdate: 'CASCADE',
