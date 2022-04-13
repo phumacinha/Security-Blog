@@ -22,6 +22,6 @@ module.exports = {
       where: { id },
     });
 
-    return res.json(role);
+    return res.json(role[1][0]);
   },
 };
