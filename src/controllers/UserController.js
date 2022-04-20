@@ -43,7 +43,7 @@ module.exports = {
       name,
       email,
       password,
-      role_ids,
+      role_ids: roleIds,
     } = req.body;
 
     const userWithInformedEmail = await User.findOne({ where: { email } });
@@ -52,18 +52,22 @@ module.exports = {
       return res.status(502).json({ error: 'Something went wrong.' });
     }
 
+    const roles = await Promise.all(roleIds.map(async (roleId) => {
+      const role = await Role.findByPk(roleId);
+      return role;
+    }));
+    const someRoleIsInvalid = roles.some((role) => !role);
+
+    if (someRoleIsInvalid) {
+      return res.status(502).json({ error: 'some role id is invalid' });
+    }
+
     const user = await User.create({
       name,
       email,
       password: EncryptorService.hashPassword(password),
     });
-    delete user.dataValues.password;
-
-    try {
-      await user.addRoles(role_ids);
-    } catch (e) {
-      return res.status(502).json({ error: 'some role id is invalid' });
-    }
+    await user.addRoles(roleIds);
 
     return res.json(await User.findByPk(user.id));
   },
