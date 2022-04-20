@@ -21,7 +21,10 @@ class Post extends Model {
             attributes: { exclude: ['user_id'] },
             include: [
               { model: User, as: 'author' },
-              { model: Comment, as: 'comments', order: [['createdAt', 'DESC']] },
+              { model: Comment.scope('embedded'), as: 'comments' },
+            ],
+            order: [
+              ['comments', 'created_at', 'desc'],
             ],
           },
         },
