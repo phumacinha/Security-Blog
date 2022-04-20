@@ -7,7 +7,6 @@ module.exports = async (req, res, next) => {
   try {
     // eslint-disable-next-line no-unused-vars
     const { data: userId } = jwtService.verify(token);
-    req.body.user_id_from_token = userId;
     req.body.user_from_token = await User.findByPk(userId);
 
     if (req.body.user_from_token) {
