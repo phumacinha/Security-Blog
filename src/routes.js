@@ -5,10 +5,7 @@ import ACLChecking from './middlewares/aclChecking';
 import RoleController from './controllers/RoleController';
 import UserController from './controllers/UserController';
 import PostController from './controllers/PostController';
-// import AdventureTypeController from './controllers/AdventureTypeController';
-// import AdventureController from './controllers/AdventureController';
-// import SubscriptionController from './controllers/SubscriptionController';
-// import AuthController from './controllers/AuthController';
+import CommentController from './controllers/CommentController';
 
 const routes = express.Router();
 
@@ -26,21 +23,8 @@ routes.delete('/users/:user_id', ACLChecking(['moderator']), UserController.dele
 routes.post('/posts', ACLChecking(['creator', 'moderator']), PostController.store);
 routes.put('/posts/:post_id', ACLChecking(['creator', 'moderator']), PostController.update);
 routes.delete('/posts/:post_id', ACLChecking(['creator', 'moderator']), PostController.delete);
-// routes.post('/users/:user_id/aventura', AdventureController.store);
-// routes.get('/users/:user_id/aventura', AdventureController.adventures);
-// routes.put('/aventura/:adventure_id', AdventureController.update);
-// routes.delete('/aventura/:adventure_id', AdventureController.delete);
 
-// routes.get('/tipo-aventura', AdventureTypeController.index);
-// routes.post('/tipo-aventura', AdventureTypeController.store);
-
-// routes.post('/users/:user_id/subscription', SubscriptionController.store);
-// routes.get('/users/:user_id/subscription', SubscriptionController.index);
-// routes.get(
-//   '/aventura/:adventure_id/subscription',
-//   SubscriptionController.adventures,
-// );
-// routes.put('/subscription/:subscription_id', SubscriptionController.update);
-// routes.delete('/subscription/:subscription_id', SubscriptionController.delete);
+routes.post('/posts/:post_id/comment', ACLChecking(['default', 'creator', 'moderator']), CommentController.store);
+routes.delete('/posts/:post_id/comment/:comment_id', ACLChecking(['default', 'creator', 'moderator']), CommentController.delete);
 
 module.exports = routes;
