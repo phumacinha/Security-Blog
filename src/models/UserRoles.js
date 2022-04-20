@@ -5,7 +5,10 @@ class UserRoles extends Model {
     super.init({}, { sequelize });
   }
 
-  static associate() {}
+  static associate() {
+    // this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
+    // this.belongsTo(models.Role, { foreignKey: 'role_id', as: 'role' });
+  }
 }
 
 module.exports = UserRoles;

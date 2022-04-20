@@ -1,4 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
+import Role from './Role';
 
 class User extends Model {
   static init(sequelize) {
@@ -6,13 +7,21 @@ class User extends Model {
       {
         name: DataTypes.STRING,
         email: DataTypes.STRING,
-        login: DataTypes.STRING,
         password: DataTypes.STRING,
-        active: DataTypes.BOOLEAN,
       },
       {
         defaultScope: {
           attributes: { exclude: ['password'] },
+          include: [
+            {
+              model: Role,
+              as: 'roles',
+              through: { attributes: [] },
+            },
+          ],
+        },
+        scopes: {
+          identification: { attributes: ['id', 'name'] },
         },
         sequelize,
       },
@@ -24,6 +33,8 @@ class User extends Model {
     this.belongsToMany(models.Role, {
       through: models.UserRoles, foreignKey: 'user_id', otherKey: 'role_id', as: 'roles',
     });
+
+    // this.addScope('lessInformation', { attributes: ['id', 'name'] });
   }
 }
 

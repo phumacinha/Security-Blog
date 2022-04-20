@@ -3,29 +3,29 @@ import EncryptorService from '../services/EncryptorService';
 
 module.exports = {
   login: async (req, res) => {
-    const { login, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!login || !password) {
-      return res.status(400).json('login-or-password-missing');
+    if (!email || !password) {
+      return res.status(400).json('email-or-password-missing');
     }
 
     try {
-      const userToCheck = await User.findOne({
-        where: { login },
-        attributes: ['password'],
-      });
-
       const user = await User.findOne({
-        where: { login },
+        where: { email },
+        attributes: { include: ['password'] },
       });
 
-      if (userToCheck && EncryptorService.comparePassword(password, userToCheck)) {
+      if (user && EncryptorService.comparePassword(password, user)) {
+        const token = EncryptorService.generateToken(user.id);
+        res.cookie('access-token', token);
+
+        delete user.dataValues.password;
         return res.status(200).json({
           token: EncryptorService.generateToken(user.id),
           user,
         });
       }
-      return res.status(401).json('incorrect-credentials');
+      return res.status(401).json({ error: 'incorrect credentials' });
     } catch (error) {
       return res.status(400).json({
         code: error.code,

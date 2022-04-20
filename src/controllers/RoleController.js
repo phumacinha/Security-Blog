@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Role from '../models/Role';
 
 module.exports = {
@@ -23,5 +24,19 @@ module.exports = {
     });
 
     return res.json(role[1][0]);
+  },
+
+  async delete(req, res) {
+    const { role_id } = req.params;
+
+    const role = await Role.findByPk(role_id);
+
+    if (!role) {
+      return res.status(502).json({ error: 'Role not found' });
+    }
+
+    await Role.destroy({ where: { id: role_id } });
+
+    return res.status(204).json();
   },
 };

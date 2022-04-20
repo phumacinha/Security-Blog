@@ -6,5 +6,5 @@ module.exports = {
 
   comparePassword: (password, user) => bcrypt.compareSync(password, user.password),
 
-  generateToken: (user) => JwtService.issue({ user }),
+  generateToken: (data, expiresIn = '2 days') => JwtService.issue({ data }, expiresIn),
 };

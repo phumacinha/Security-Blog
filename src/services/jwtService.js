@@ -4,11 +4,8 @@ const jwtSecret = 'sails.config.secrets.jwtSecret';
 const algorithm = 'HS256';
 
 module.exports = {
-  issue: (payload) => {
-    const token = jwt.sign(payload, jwtSecret, {
-      algorithm,
-      expiresIn: '2 days',
-    });
+  issue: (payload, expiresIn) => {
+    const token = jwt.sign(payload, jwtSecret, { algorithm, expiresIn });
     return token;
   },
 
