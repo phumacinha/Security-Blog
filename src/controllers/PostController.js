@@ -36,7 +36,7 @@ module.exports = {
   async post(req, res) {
     const { post_id } = req.params;
 
-    const post = await Post.findByPk(post_id);
+    const post = await Post.scope('withComments').findByPk(post_id);
 
     if (!post) return res.status(404).json({ error: 'Post not found' });
 
