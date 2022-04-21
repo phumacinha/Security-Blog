@@ -25,7 +25,7 @@ module.exports = {
           user,
         });
       }
-      return res.status(401).json({ error: 'incorrect credentials' });
+      return res.status(401).json({ error: 'invalid credentials' });
     } catch (error) {
       return res.status(400).json({
         code: error.code,

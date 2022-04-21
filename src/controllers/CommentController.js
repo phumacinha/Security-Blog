@@ -14,7 +14,7 @@ module.exports = {
     const post = await Post.findByPk(post_id);
 
     if (!post) {
-      return res.status(502).json({ error: 'Cannot send comment' });
+      return res.status(400).json({ error: 'Cannot send comment' });
     }
 
     const comment = await Comment.create({
@@ -43,7 +43,7 @@ module.exports = {
     const isModerator = user.roles.map((role) => role.identifier).includes('moderator');
 
     if (!comment || (!isModerator && comment.user_id !== user.id)) {
-      return res.status(502).json({ error: 'Cannot delete comment' });
+      return res.status(403).json({ error: 'Cannot delete comment' });
     }
 
     await Comment.destroy({ where: { id: post_id } });

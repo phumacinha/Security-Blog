@@ -20,10 +20,6 @@ module.exports = {
       content,
     } = req.body;
 
-    // const user = await User.findByPk(user_id);
-
-    if (!user) return res.status(400).json({ error: 'User not found' });
-
     const post = await Post.create({
       user_id: user.id,
       title,
@@ -56,7 +52,7 @@ module.exports = {
     const post = await Post.findByPk(post_id);
 
     if (!post || (!isModerator && post.author.id !== user.id)) {
-      return res.status(502).json({ error: 'Cannot update this post' });
+      return res.status(403).json({ error: 'Cannot update this post' });
     }
 
     await Post.update({ title, content }, { where: { id: post_id } });
@@ -73,26 +69,11 @@ module.exports = {
     const post = await Post.findByPk(post_id);
 
     if (!post || (!isModerator && post.author.id !== user.id)) {
-      return res.status(502).json({ error: 'Cannot delete this post' });
+      return res.status(403).json({ error: 'Cannot delete this post' });
     }
 
     await Post.destroy({ where: { id: post_id } });
 
     return res.status(204).json();
   },
-
-  // async delete(req, res) {
-  //   const { adventure_id } = req.params;
-
-  //   const adventure = await Adventure.findByPk(adventure_id);
-
-  //   if (!adventure)
-  //     return res.status(502).json({ error: "Adventure not found" });
-
-  //   const response = await Adventure.destroy({
-  //     where: { id: adventure_id }
-  //   });
-
-  //   return res.json(response);
-  // }
 };

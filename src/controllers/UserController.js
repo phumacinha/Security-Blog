@@ -35,7 +35,7 @@ module.exports = {
       console.log(`Para continuar o cadastro do usuário com seu e-mail, acesse o link: ${creationToken}. Caso contrário, apenas desconsidere o e-mail.`);
     }
 
-    return res.status(200).json();
+    return res.status(204).json();
   },
 
   async store(req, res) {
@@ -49,7 +49,7 @@ module.exports = {
     const userWithInformedEmail = await User.findOne({ where: { email } });
 
     if (userWithInformedEmail) {
-      return res.status(502).json({ error: 'Something went wrong.' });
+      return res.status(400).json({ error: 'Something went wrong.' });
     }
 
     const roles = await Promise.all(roleIds.map(async (roleId) => {
@@ -59,7 +59,7 @@ module.exports = {
     const someRoleIsInvalid = roles.some((role) => !role);
 
     if (someRoleIsInvalid) {
-      return res.status(502).json({ error: 'some role id is invalid' });
+      return res.status(400).json({ error: 'some role id is invalid' });
     }
 
     const user = await User.create({
@@ -78,48 +78,11 @@ module.exports = {
     const user = await User.findByPk(user_id);
 
     if (!user) {
-      return res.status(502).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'User not found' });
     }
 
     return res.json(user);
   },
-
-  // async changePassword(req, res) {
-  //   const { user_id } = req.params;
-  //   const { password, new_password } = req.body;
-
-  //   const user = await User.findByPk(user_id, {
-  //     attributes: {
-  //       include: ['password'],
-  //     },
-  //   });
-
-  //   // TODO check limit time after creation to change password
-
-  //   if (!user) {
-  //     return res.status(502).json({ error: 'User not found' });
-  //   }
-
-  //   if (user && EncryptorService.comparePassword(password, user)) {
-  //     const updateResult = await User.update(
-  //       {
-  //         password: EncryptorService.hashPassword(new_password),
-  //         active: true,
-  //       },
-  //       {
-  //         returning: true,
-  //         where: { id: user_id },
-  //       },
-  //     );
-
-  //     const updatedUser = updateResult[1][0].dataValues;
-  //     delete updatedUser.password;
-
-  //     return res.json(updatedUser);
-  //   }
-
-  //   return res.status(401).json({ error: 'invalid-credentials' });
-  // },
 
   async updateRoles(req, res) {
     const { user_id } = req.params;
@@ -128,13 +91,13 @@ module.exports = {
     const user = await User.findByPk(user_id);
 
     if (!user) {
-      return res.status(502).json({ error: 'user not found' });
+      return res.status(404).json({ error: 'user not found' });
     }
 
     try {
       await user.setRoles(role_ids);
     } catch (e) {
-      return res.status(502).json({ error: 'some role id is invalid' });
+      return res.status(400).json({ error: 'some role id is invalid' });
     }
 
     return res.json(await User.findByPk(user_id));
@@ -146,7 +109,7 @@ module.exports = {
     const user = await User.findByPk(user_id);
 
     if (!user) {
-      return res.status(502).json({ error: 'User not found' });
+      return res.status(404).json({ error: 'User not found' });
     }
 
     await User.destroy({ where: { id: user_id } });

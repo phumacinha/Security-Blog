@@ -32,7 +32,7 @@ module.exports = {
     const role = await Role.findByPk(role_id);
 
     if (!role) {
-      return res.status(502).json({ error: 'Role not found' });
+      return res.status(404).json({ error: 'Role not found' });
     }
 
     await Role.destroy({ where: { id: role_id } });
