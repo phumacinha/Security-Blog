@@ -12,12 +12,8 @@ module.exports = async (req, res, next) => {
     if (req.body.user_from_token) {
       return next();
     }
-    return res.status(403).json({
-      error: 'Unauthorized',
-    });
+    return res.status(403).json({ errors: ['unauthorized'] });
   } catch (error) {
-    return res.status(403).json({
-      error: 'Unauthorized',
-    });
+    return res.status(403).json({ errors: ['unauthorized'] });
   }
 };

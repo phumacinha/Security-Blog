@@ -6,7 +6,7 @@ module.exports = {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json('email-or-password-missing');
+      return res.status(400).json({ errors: ['email or password missing'] });
     }
 
     try {
@@ -25,12 +25,12 @@ module.exports = {
           user,
         });
       }
-      return res.status(401).json({ error: 'invalid credentials' });
+
+      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+      await sleep(3000);
+      return res.status(401).json({ errors: ['invalid credentials'] });
     } catch (error) {
-      return res.status(400).json({
-        code: error.code,
-        details: error.details,
-      });
+      return res.status(500).json({ errors: ['unexpected error'] });
     }
   },
 };

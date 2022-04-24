@@ -1,15 +1,35 @@
 import { Model, DataTypes } from 'sequelize';
 import Role from './Role';
 
+import EncryptorService from '../services/EncryptorService';
+import { isValidName, isEmail, isStrongPassword } from '../services/validationService';
+
 class User extends Model {
   static init(sequelize) {
     super.init(
       {
-        name: DataTypes.STRING,
-        email: DataTypes.STRING,
-        password: DataTypes.STRING,
+        name: {
+          type: DataTypes.STRING,
+          validate: { isValidName, len: [1, 128] },
+        },
+        email: {
+          type: DataTypes.STRING,
+          validate: { isEmail, len: [5, 128] },
+        },
+        password: {
+          type: DataTypes.STRING,
+          validate: { isStrongPassword },
+        },
       },
       {
+        hooks: {
+          afterValidate: (user, options) => {
+            if (options.fields.includes('password')) {
+              // eslint-disable-next-line no-param-reassign
+              user.password = EncryptorService.hashPassword(user.password);
+            }
+          },
+        },
         defaultScope: {
           attributes: { exclude: ['password'] },
           include: [
@@ -33,8 +53,6 @@ class User extends Model {
     this.belongsToMany(models.Role, {
       through: models.UserRoles, foreignKey: 'user_id', otherKey: 'role_id', as: 'roles',
     });
-
-    // this.addScope('lessInformation', { attributes: ['id', 'name'] });
   }
 }
 

@@ -12,6 +12,8 @@ import AuthController from './controllers/AuthController';
 import UserController from './controllers/UserController';
 import PostController from './controllers/PostController';
 
+require('dotenv').config();
+
 const app = express();
 
 app.use(cors());
@@ -29,4 +31,4 @@ app.use('/', authMiddleware);
 
 app.use(routes);
 
-app.listen(3000, () => console.log('Listening...'));
+app.listen(process.env.PORT, () => console.log('Listening...'));

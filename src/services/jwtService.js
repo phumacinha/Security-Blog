@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const jwtSecret = 'sails.config.secrets.jwtSecret';
+const jwtSecret = '6b199e05ab29423992eeb12064baaee3dbeb8aa3e567c411b8f8e53d7f053e74';
 const algorithm = 'HS256';
 
 module.exports = {

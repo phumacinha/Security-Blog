@@ -3,14 +3,18 @@ import Post from '../models/Post';
 
 module.exports = {
   async index(req, res) {
-    const posts = await Post.findAll();
+    try {
+      const posts = await Post.findAll();
 
-    const postsWithCommentCounter = await Promise.all(posts.map(async (post) => {
-      const commentCounter = await post.countComments();
-      return { ...post.dataValues, commentCounter };
-    }));
+      const postsWithCommentCounter = await Promise.all(posts.map(async (post) => {
+        const commentCounter = await post.countComments();
+        return { ...post.dataValues, commentCounter };
+      }));
 
-    return res.json(postsWithCommentCounter);
+      return res.json(postsWithCommentCounter);
+    } catch (e) {
+      return res.status(500).json({ errors: ['unexpected error'] });
+    }
   },
 
   async store(req, res) {
@@ -20,23 +24,36 @@ module.exports = {
       content,
     } = req.body;
 
-    const post = await Post.create({
-      user_id: user.id,
-      title,
-      content,
-    });
+    try {
+      const post = await Post.create({
+        user_id: user.id,
+        title,
+        content,
+      });
 
-    return res.json(await Post.findByPk(post.id));
+      return res.json(await Post.findByPk(post.id));
+    } catch (e) {
+      const isValidationError = e?.name === 'SequelizeValidationError';
+      if (isValidationError) {
+        return res.status(400).json({ errors: (e.errors || []).map((error) => error.message) });
+      }
+
+      return res.status(500).json({ errors: ['unexpected error'] });
+    }
   },
 
   async post(req, res) {
     const { post_id } = req.params;
 
-    const post = await Post.scope('withComments').findByPk(post_id);
+    try {
+      const post = await Post.scope('withComments').findByPk(post_id);
 
-    if (!post) return res.status(404).json({ error: 'Post not found' });
+      if (!post) return res.status(404).json({ errors: ['post not found'] });
 
-    return res.json(post);
+      return res.json(post);
+    } catch (e) {
+      return res.status(500).json({ errors: ['unexpected error'] });
+    }
   },
 
   async update(req, res) {
@@ -47,33 +64,42 @@ module.exports = {
       content,
     } = req.body;
 
-    const isModerator = user.roles.map((role) => role.identifier).includes('moderator');
+    try {
+      const isModerator = user.roles.map((role) => role.identifier).includes('moderator');
+      const post = await Post.findByPk(post_id);
+      if (!post || (!isModerator && post.author.id !== user.id)) {
+        return res.status(403).json({ errors: ['cannot update this post'] });
+      }
 
-    const post = await Post.findByPk(post_id);
+      await Post.update({ title, content }, { where: { id: post_id } });
+      return res.json(await Post.findByPk(post_id));
+    } catch (e) {
+      const isValidationError = e?.name === 'SequelizeValidationError';
+      if (isValidationError) {
+        return res.status(400).json({ errors: (e.errors || []).map((error) => error.message) });
+      }
 
-    if (!post || (!isModerator && post.author.id !== user.id)) {
-      return res.status(403).json({ error: 'Cannot update this post' });
+      return res.status(500).json({ errors: ['unexpected error'] });
     }
-
-    await Post.update({ title, content }, { where: { id: post_id } });
-
-    return res.json(await Post.findByPk(post_id));
   },
 
   async delete(req, res) {
     const { post_id } = req.params;
     const { user_from_token: user } = req.body;
 
-    const isModerator = user.roles.map((role) => role.identifier).includes('moderator');
+    try {
+      const isModerator = user.roles.map((role) => role.identifier).includes('moderator');
+      const post = await Post.findByPk(post_id);
 
-    const post = await Post.findByPk(post_id);
+      if (!post || (!isModerator && post.author.id !== user.id)) {
+        return res.status(403).json({ errors: ['cannot delete this post'] });
+      }
 
-    if (!post || (!isModerator && post.author.id !== user.id)) {
-      return res.status(403).json({ error: 'Cannot delete this post' });
+      await Post.destroy({ where: { id: post_id } });
+
+      return res.status(204).json();
+    } catch (e) {
+      return res.status(500).json({ errors: ['unexpected error'] });
     }
-
-    await Post.destroy({ where: { id: post_id } });
-
-    return res.status(204).json();
   },
 };

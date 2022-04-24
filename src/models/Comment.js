@@ -1,12 +1,26 @@
+/* eslint-disable no-param-reassign */
 import { Model, DataTypes } from 'sequelize';
 import User from './User';
+import { escapeHTML } from '../services/sanitizeService';
 
 class Comment extends Model {
   static init(sequelize) {
     super.init({
-      content: DataTypes.TEXT,
-      createdAt: DataTypes.DATE,
+      content: {
+        type: DataTypes.TEXT,
+        validate: {
+          len: {
+            args: [1, 256],
+            get msg() { return `comment must be between ${this.args[0]} and ${this.args[1]} characters long`; },
+          },
+        },
+      },
     }, {
+      hooks: {
+        beforeSave(comment) {
+          comment.content = escapeHTML(comment.content);
+        },
+      },
       scopes: {
         embedded: {
           attributes: ['id', 'content', 'createdAt'],
