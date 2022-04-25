@@ -45,7 +45,7 @@ Siga os passos para executar a aplicação:
 1. Clone o projeto.
 
     ```console
-    git clone https://github.com/phumacinha/The-Security-Blog.git
+    git clone git@github.com:phumacinha/The-Security-Blog.git
     ```
 
 1. Acesse a pasta do projeto.
